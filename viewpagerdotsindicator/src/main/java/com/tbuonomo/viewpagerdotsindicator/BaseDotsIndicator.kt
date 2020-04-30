@@ -64,10 +64,18 @@ abstract class BaseDotsIndicator @JvmOverloads constructor(context: Context,
       field = value
       refreshDotsColors()
     }
+  
+  public var dataSetObserver: DataSetObserver = object : DataSetObserver() {
+        override fun onChanged() {
+            super.onChanged()
+            refreshDots()
+        }
+    }              
 
   protected var dotsSize = dpToPxF(type.defaultSize)
   protected var dotsCornerRadius = dotsSize / 2f
   protected var dotsSpacing = dpToPxF(type.defaultSpacing)
+                
 
   init {
     if (attrs != null) {
@@ -183,12 +191,7 @@ abstract class BaseDotsIndicator @JvmOverloads constructor(context: Context,
               "initializing the dots indicator !")
     }
 
-    viewPager.adapter!!.registerDataSetObserver(object : DataSetObserver() {
-      override fun onChanged() {
-        super.onChanged()
-        refreshDots()
-      }
-    })
+    viewPager.adapter!!.registerDataSetObserver(dataSetObserver)
 
     pager = object : Pager {
       var onPageChangeListener: OnPageChangeListener? = null
